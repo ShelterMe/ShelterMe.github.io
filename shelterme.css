@@ -1,0 +1,17 @@
+body{
+      background-image: url("sheelterme.png");
+      background-repeat: no-repeat;
+      background-size: contain;
+      background-position: center;
+      resize: both;
+      overflow: scroll;
+  }
+.button{
+  background-color: Transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+  font-family: "Impact";
+}

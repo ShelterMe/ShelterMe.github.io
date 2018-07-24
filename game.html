@@ -1,0 +1,443 @@
+<html>
+<head>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+  <link rel="stylesheet" href = "pics.css">
+  <link rel="stylesheet" href = "shelterGeneral.css">
+  <link rel="stylesheet" href = "taskbar.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+  <div class="navbar">
+    <a href="homepage.html">Home</a>
+    <a href="game.html">Game</a>
+    <a href="quiz.html">Quiz</a>
+    <a href="adopt.html">Adopt</a>
+    <a href="donate.html">Donate</a>
+    <a href="about.html">About Us</a>
+    <a href="sources.html">Sources</a>
+
+  </div>
+  <form>
+      <legend> Find An Animal Near You! </legend>
+      <label for="zip">Zip</label>
+      <input type="text" name="zip" id="zip">
+      <input class = "button" type = "submit" id="submitZip">
+  </form>
+  <h1>How to play:<h1>
+    <p>
+      Enter your zipcode and press submit to start the game!
+      <br />Use the arrow keys to move around.
+      <br /> To jump press up!
+      <br /> To win, reach your owner.
+      <br /> Look out for the petsnatchers and the walls! If you touch them you have to start over.
+      <br /> Collect the treats to boost your treat count!
+    </p>
+    <audio id="back_music">
+      <source src="music.mp3">
+    </audio>
+    <audio id="winSoundEffect">
+      <source src="win.mp3">
+    </audio>
+    <audio id="hitImpact">
+      <source src="hit.mp3">
+    </audio>
+    <audio id="eatKibble">
+      <source src="eat.mp3">
+    </audio>
+    <button class = "button" onclick="playAudio()" type="button">Play Audio</button>
+    <button class = "button" onclick="pauseAudio()" type="button">Pause Audio</button>
+  <div id="game"></div>
+
+  <script type="text/javascript" src="https://rawgithub.com/craftyjs/Crafty/release/dist/crafty-min.js"></script>
+  <script>
+  var x = document.getElementById("back_music");
+  var w = document.getElementById("winSoundEffect");
+  var hit = document.getElementById("hitImpact");
+  var eat = document.getElementById("eatKibble");
+  function playAudio() {
+      x.play();
+  }
+  function pauseAudio() {
+      x.pause();
+  }
+  function winSound(){
+      pauseAudio();
+      w.play();
+  }
+  function hitSound(){
+      hit.play();
+  }
+  function eatSound(){
+      eat.play();
+  }
+  document.addEventListener('DOMContentLoaded', bindButtons);
+  function bindButtons(){
+    document.getElementById('submitZip').addEventListener('click', function(event){
+  		event.preventDefault();
+      Crafty("wintext").destroy();
+      var apiKey = '61cfb5f93f3464ec301cfac23cb6a616'; // 2f95f51b181ddd27883e91878e922466 assign our key to a variable, easier to read
+      var zip = document.getElementById('zip').value; // this line gets the zip code from the form entry
+      var url = 'https://api.petfinder.com/pet.getRandom';
+      console.log(zip)
+      // Within $.ajax{...} is where we fill out our query
+      $.ajax({
+        url: url,
+        jsonp: "callback",
+        dataType: "jsonp",
+        data: {
+          key: apiKey,
+          location: zip,
+          output: 'basic',
+          format: 'json'
+        },
+        // Here is where we handle the response we got back from Petfinder
+        success: function( response ) {
+          //console.log(response); // debugging
+          //set up if statements if pet doesnt have any of the elements below
+          var petName = response.petfinder.pet.name.$t;
+          if(response.petfinder.pet.media.photos.photo[0]){
+            var img = response.petfinder.pet.media.photos.photo[0].$t;
+          }else{
+            var img = response.petfinder.pet.media.photos.photo.$t;
+          }
+          if(response.petfinder.pet.breeds.breed[0]){
+            var breed =response.petfinder.pet.breeds.breed[0].$t;
+          }else{
+            var breed =response.petfinder.pet.breeds.breed.$t;
+          }
+          var age= response.petfinder.pet.age.$t;
+          var contactphone=response.petfinder.pet.contact.phone.$t;
+          var contactemail=response.petfinder.pet.contact.email.$t;
+          var city=response.petfinder.pet.contact.city.$t;
+          var state=response.petfinder.pet.contact.state.$t;
+          Crafty.init(1200,700, document.getElementById('game'));
+          var kibbleCount=0;
+          function UpdateKibbleCount(){
+            kibbleCount=kibbleCount+1;
+            helloWorldText.text("Treat Count: "+kibbleCount)
+          }
+          function winner(){
+              winSound();
+              Crafty("2D").destroy();
+              var hi = Crafty.e("wintext,2D, Canvas, hero_idle")
+                .attr({ x: 20, y: 37, w:50.625, h:63.375})
+              Crafty.e('wintext,2D, DOM, Text')
+                .attr({
+                  x: 0, y: 0
+                })
+                .text("YOU WIN")
+                .textFont({
+                size: '30px',
+                family: "Impact"
+                //weight: 'bold'
+                })
+              Crafty.e('wintext,2D, DOM, Text')
+                .attr({
+                  x: 0, y: 100
+                })
+                .text("You played with: "+petName)
+                .textFont({
+                size: '20px',
+                family: "Impact"
+                //weight: 'bold'
+                })
+              Crafty.e('wintext,2D, DOM, Text')
+                .attr({
+                  x: 0, y: 150
+                })
+                .text("I'm looking for a nice place to call home! Please adopt me!")
+                .textFont({
+                size: '18px',
+                family: "Impact"
+                //weight: 'bold'
+                })
+              Crafty.e('wintext,2D, DOM, Text')
+                .attr({
+                  x: 0, y: 200
+                })
+                .text("Age: "+age)
+                .textFont({
+                size: '18px',
+                family: "Impact"
+                //weight: 'bold'
+                })
+              Crafty.e('wintext,2D, DOM, Text')
+                .attr({
+                  x: 0, y: 250
+                })
+                .text("Breed: "+breed)
+                .textFont({
+                size: '18px',
+                family: "Impact"
+                //weight: 'bold'
+                })
+              Crafty.e('wintext,2D, DOM, Text')
+                .attr({
+                    x: 0, y: 300
+                  })
+                  .text("Contact Information: ")
+                  .textFont({
+                  size: '18px',
+                  family: "Impact"
+                  //weight: 'bold'
+                  })
+              Crafty.e('wintext,2D, DOM, Text')
+                .attr({
+                  x: 0, y: 350
+                })
+                .text("Email: "+contactemail)
+                .textFont({
+                size: '16px',
+                family: "Impact"
+                //weight: 'bold'
+                })
+              Crafty.e('wintext,2D, DOM, Text')
+                .attr({
+                  x: 0, y: 400
+                })
+                .text("Phone: "+contactphone)
+                .textFont({
+                size: '16px',
+                family: "Impact"
+                //weight: 'bold'
+                })
+              Crafty.e('wintext,2D, DOM, Text')
+                .attr({
+                  x: 0, y: 450
+                })
+                .text("You can find me in "+city+", "+state)
+                .textFont({
+                size: '18px',
+                family: "Impact"
+                //weight: 'bold'
+                })
+          }
+          //game platforms
+          Crafty.e('Platform, 2D, Canvas, Color') //1
+                  .attr({x: 0, y: 67, w: 180, h: 10})
+                  .color('brown');
+          Crafty.e('Platform, 2D, Canvas, Color') //2
+                .attr({x: 181, y: 149, w: 419, h: 10})
+                .color('brown');
+          Crafty.e('Platform, 2D, Canvas, Color') //3
+                  .attr({x: 900, y: 149, w: 295, h: 10})
+                  .color('brown');
+          Crafty.e('Platform, 2D, Canvas, Color') //4
+                  .attr({x: 600, y: 250, w: 300, h: 10})
+                  .color('brown');
+          Crafty.e('Platform, 2D, Canvas, Color') //5
+                  .attr({x: 0, y: 350, w: 600, h: 10})
+                  .color('brown');
+          Crafty.e('Platform, 2D, Canvas, Color') //6
+                  .attr({x: 0, y: 510, w: 100, h: 10})
+                  .color('brown');
+          Crafty.e('Platform, 2D, Canvas, Color') //7
+                  .attr({x: 250, y: 600, w: 180, h: 10})
+                  .color('brown');
+          Crafty.e('Platform, 2D, Canvas, Color') //8
+                  .attr({x: 700, y: 600, w: 500, h: 10})
+                  .color('brown');
+          //walls for collision detection, sends back to beginning on touch
+          Crafty.e('Wall, 2D, Canvas, Color')
+                .attr({x: 0, y: 0, w: 5, h: 700})
+                .color('brown');
+          Crafty.e('Wall, 2D, Canvas, Color')
+                .color('brown')
+                .attr({x: 1195, y: 0, w: 5, h: 700});
+          Crafty.e('Wall, 2D, Canvas, Color')
+                .attr({x: 0, y: 695, w: 1200, h: 5})
+                .color('brown');
+
+          //kibbles
+          var kibble1=Crafty.e('kibble1,2D,Canvas,Color')
+            .attr({x:560,y:125,w:15,h:15})
+            .color("orange");
+          var kibble2=Crafty.e('kibble2,2D,Canvas,Color')
+            .attr({x:1160,y:125,w:15,h:15})
+            .color("orange");
+          var kibble3=Crafty.e('kibble3,2D,Canvas,Color')
+            .attr({x:15,y:326,w:15,h:15})
+            .color("orange");
+          var kibble4=Crafty.e('kibble4,2D,Canvas,Color')
+            .attr({x:1160,y:576,w:15,h:15})
+           .color("orange");
+          var kibble5=Crafty.e('kibble5,2D,Canvas,Color')
+            .attr({x:285,y:576,w:15,h:15})
+            .color("orange");
+
+          var helloWorldText = Crafty.e('treattext,2D, DOM, Text')
+          .attr({
+            x: 1100, y: 10
+          })
+          .text("Treat Count: 0")
+          .textFont({
+          size: '18px',
+          family: "Impact"
+          //weight: 'bold'
+          })
+          var cat = {
+          "sprites": {
+            [img]: {
+              tile: 60,
+              tileh: 60,
+              map: {
+                hero_idle: [0, 0],
+              }
+            }
+          }
+        };
+          var badBois = {
+          "sprites": {
+            "badBois.png": {
+              tile: 32,
+              tileh: 32,
+              map: {
+                standBoi: [0, 0],
+                leftBoi: [1, 0],
+                frontBoi: [2, 0],
+                rightBoi: [3, 0]
+              }
+            }
+          }
+          };
+          var owner = {
+          "sprites": {
+            "owner.png": {
+              tile: 256,
+              tileh: 256,
+              map: {
+                main: [0, 0]
+              }
+            }
+          }
+          };
+          Crafty.load(cat);
+          Crafty.load(badBois);
+          Crafty.load(owner);
+          var badBoi=Crafty.e("badBoi, 2D, Canvas, standBoi")
+            .attr({x:360,y:89, w:60, h:60})
+          var badBoiAgain=Crafty.e("badBoi, 2D, Canvas, standBoi")
+            .attr({x:240,y:290, w:60, h:60})
+          var badBoiOnceMore=Crafty.e("badBoi, 2D, Canvas, standBoi")
+            .attr({x:890,y:540, w:60, h:60})
+          var owner=Crafty.e("owner, 2D, Canvas, main")
+            .attr({x:5,y:420, w:100, h:100})
+
+          var idle_hero = Crafty.e("2D, Canvas, hero_idle,Twoway,Gravity,Collision")
+            .attr({ x: 10, y: 10, w:50.625, h:63.375})
+            .twoway(200)
+            .gravity('Platform')
+            .onHit('kibble1', function(hitDatas) { // on collision with kibble
+              eatSound();
+              idle_hero.ignoreHits()
+              kibble1.destroy()
+              UpdateKibbleCount()
+            })
+            .onHit('kibble2', function(hitDatas) { // on collision with kibble
+              eatSound()
+              idle_hero.ignoreHits()
+              kibble2.destroy()
+              UpdateKibbleCount()
+            })
+            .onHit('kibble3', function(hitDatas) { // on collision with kibble
+              eatSound()
+              idle_hero.ignoreHits()
+              kibble3.destroy()
+              UpdateKibbleCount()
+            })
+            .onHit('kibble4', function(hitDatas) { // on collision with kibble
+              eatSound()
+              idle_hero.ignoreHits()
+              kibble4.destroy()
+              UpdateKibbleCount()
+            })
+            .onHit('kibble5', function(hitDatas) { // on collision with kibble
+              eatSound()
+              idle_hero.ignoreHits()
+              kibble5.destroy()
+              UpdateKibbleCount()
+            })
+            .onHit('Wall', function(hitDatas) { // on collision with wall
+                hitSound()
+                idle_hero.ignoreHits()
+                idle_hero.attr({ x: 10, y: 10 })
+            })
+            .onHit('badBoi', function(hitDatas) { // on collision with badBoi
+              hitSound()
+              idle_hero.ignoreHits()
+              idle_hero.attr({ x: 10, y: 10 })
+            })
+            .onHit('owner', function(hitDatas){
+              idle_hero.ignoreHits()
+              winner()
+            })
+        }
+      })
+      });
+    }
+  </script>
+
+  <script type="text/javascript">
+       document.onkeydown = cancelArrowKeys;
+       function cancelArrowKeys(e) {
+           try {
+               var e = window.event || e
+               var key = e.charCode ? e.charCode : e.keyCode ? e.keyCode : 0;
+               if (key == 37 || key == 38 || key == 39 || key == 40 || key == 13) {
+                   if (key == 13)
+                       document.getElementById('<%=btnFightPokemon.ClientID%>').click();
+                   if (key == 37)
+                       document.getElementById('<%=ImgBtnWest.ClientID%>').click();
+                   if (key == 38)
+                       document.getElementById('<%=ImgBtnNorth.ClientID%>').click();
+                   if (key == 39)
+                       document.getElementById('<%=ImgBtnEast.ClientID%>').click();
+                   if (key == 40)
+                       document.getElementById('<%=ImgBtnSouth.ClientID%>').click();
+                   event.returnValue = false;
+              }
+          }
+           catch (Exception) {
+               return false;
+           }
+       }
+  </script>
+  <style>
+        h1{
+          font-family:"Impact";
+
+        }
+        body{
+          height:514px !important;
+          width:100%;
+        }
+        p{
+          font-size: 18px;
+          font-family: "Impact";
+        }
+        #game{
+            background-image:url("clouds.jpg");
+            background-size: 1200px 700px;
+            padding-left: 0;
+            padding-right:0px;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+            width: 800px;
+        }
+        form{
+          margin-top: 200px;
+          font-family: "Impact";
+        }
+        .wintext{
+          font-family: "Impact";
+          white-space: nowrap;
+          overflow-wrap: break-word;
+          word-wrap: break-word;
+        }
+        legend{
+          font-family: "Impact";
+        }
+  </style>
+</body>
+</html>

@@ -1,0 +1,119 @@
+.navbar {
+  overflow: hidden;
+  background-color: #1B2631;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+.navbar a {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+  font-family: "Impact";
+}
+
+.navbar a:hover {
+  background: #134B4E;
+  color: black;
+}
+.navbar c {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+  font-family: "Impact";
+}
+
+.navbar c:hover {
+  background: #6F8CB6;
+  color: black;
+}
+.navbar d {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+  font-family: "Impact";
+}
+
+.navbar d:hover {
+  background: #2561A4;
+  color: black;
+}
+.navbar e {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+  font-family: "Impact";
+}
+
+.navbar e:hover {
+  background: #AFB13C;
+  color: black;
+}
+.navbar f {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+  font-family: "Impact";
+}
+
+.navbar f:hover {
+  background: #49E4D4;
+  color: black;
+}
+.navbar g {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+  font-family: "Impact";
+}
+
+.navbar g:hover {
+  background: #19A2A9;
+  color: black;
+}
+.navbar h {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+  font-family: "Impact";
+}
+
+.navbar h:hover {
+  background: #40808A;
+  color: black;
+}
+
+.main {
+  padding: 16px;
+  margin-top: 30px;
+  height: 1500px; /* Used in this example to enable scrolling */
+}

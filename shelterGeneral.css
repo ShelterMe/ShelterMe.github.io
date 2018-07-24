@@ -1,0 +1,10 @@
+body{
+  background-color:#D6EAF8;
+  background-size: contain;
+  resize: both;
+  height: 720px !important;
+  overflow: scroll;
+}
+.button {
+  background-color: #E5E7E9;
+}
